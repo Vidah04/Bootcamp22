@@ -1,0 +1,775 @@
+CREATE TABLE ADMIN(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ USERNAME VARCHAR2(10) NOT NULL,
+ PASSWORD VARCHAR2(8) NOT NULL
+);
+
+CREATE TABLE USERS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ PASSWORD VARCHAR2(6) NOT NULL,
+ USERNAME VARCHAR2(10) NOT NULL,
+ FIRST_NAME VARCHAR2(20) NOT NULL,
+ LAST_NAME VARCHAR2(20),
+ GENDER VARCHAR2(10),
+ PHONE NUMBER(15),
+ EMAIL VARCHAR2(20),
+ ADDRESS VARCHAR2(30),
+ CITY VARCHAR2(20),
+ STATE VARCHAR2(20),
+ POSTAL_CODE NUMBER(10),
+ COUNTRY VARCHAR2(20),
+ AMOUNT NUMBER(15)
+);
+
+CREATE TABLE PARAM(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20),
+ VALUE VARCHAR2(20)
+);
+
+CREATE TABLE THEATERS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE CINEMAS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL,
+ LOCATION VARCHAR2(30),
+ THEATER_ID VARCHAR(10) REFERENCES THEATERS(ID)
+);
+
+CREATE TABLE ROOMS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL,
+ AVAILABLE_SEAT NUMBER(10),
+ CINEMAS_ID VARCHAR2(10) REFERENCES CINEMAS(ID)
+);
+
+CREATE TABLE SEATS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ STATUS VARCHAR2(10)NOT NULL,
+ ROOM_ID VARCHAR2(10) REFERENCES ROOMS(ID)
+ NAME VARCHAR2(20)
+);
+
+CREATE TABLE SCHEDULE(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ SHOWTIMES TIMESTAMP
+);
+
+CREATE TABLE RATING(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE CATEGORY(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE FILMS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ TITLE VARCHAR2(30) NOT NULL,
+ POSTER_FILM BLOB,
+ SYNOPSIS VARCHAR2(50),
+ DESCRIPTION VARCHAR2(50),
+ DURATION VARCHAR2(10),
+ RATING_ID VARCHAR(10) REFERENCES RATING(ID),
+ CATEGORY_ID VARCHAR(10) REFERENCES CATEGORY(ID)
+ STATUS VARCHAR2(20),
+ TRAILER VARCHAR2(50)
+);
+
+CREATE TABLE DETAIL_FILMS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ FILM_ID VARCHAR2(10) REFERENCES FILMS(ID),
+ CINEMA_ID VARCHAR2(10) REFERENCES CINEMAS(ID),
+ PRICE NUMBER(10)
+);
+
+
+CREATE TABLE FILMS_ROOMS(
+ FILM_ID VARCHAR2(10) REFERENCES FILMS(ID),
+ ROOM_ID VARCHAR2(10) REFERENCES ROOMS(ID),
+ SHOW_DATE DATE ,
+ HOUR VARCHAR2(10)
+);
+
+CREATE TABLE RESTAURANT(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL,
+ CINEMA_ID VARCHAR2(10) REFERENCES CINEMAS(ID)
+);
+
+CREATE TABLE PRODUCT(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ VARIETY VARCHAR(10) NOT NULL,
+ NAME VARCHAR2(20),
+ PRICE NUMBER,
+ RESTAURANT_ID VARCHAR2(10) REFERENCES RESTAURANT(ID)
+);
+
+CREATE TABLE RESERVATION(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ RESERVATION_DATE DATE,
+ TOTAL_PRICE NUMBER(15)
+);
+
+CREATE TABLE DETAIL_RESERVATION(
+ USER_ID VARCHAR2(10) REFERENCES USERS(ID),
+ RESERVATION_ID VARCHAR2(10) REFERENCES RESERVATION(ID),
+ DETAIL_SCHEDULE_ID VARCHAR2(10) REFERENCES DETAIL_SCHEDULE(ID),
+ SEAT_ID VARCHAR2(10) REFERENCES SEATS(ID)
+);
+
+CREATE TABLE ORDERS(
+ USER_ID VARCHAR2(10) REFERENCES USERS(ID),
+ PRODUCT_ID VARCHAR2(10) REFERENCES PRODUCT(ID),
+ RESERVATION_ID VARCHAR2(10) REFERENCES RESERVATION(ID),
+ QUANTITY NUMBER(2)
+);
+
+=========================================================================================================================================
+//PROCEDURE INSERT, UPDATE, DELETE
+=========================================================================================================================================
+/Insert Admin
+
+create or replace procedure insertadmin(id IN varchar2, username IN varchar2, password IN varchar2)
+IS 
+BEGIN
+ insert into admin
+ values(id,username,password);
+END;
+
+begin insertadmin('A1','habhab','12345678');
+end;
+begin insertadmin('A2','vidah','12345678');
+end;
+
+select * from admin
+/UPDATE ADMIN
+describe admin
+
+create or replace procedure updateadmin(admin_id IN varchar, username_admin IN varchar2, pass_admin In varchar2)
+IS
+BEGIN
+  update admin set username=username_admin, password=pass_admin
+     where id=admin_id;
+END;
+/
+
+begin updateadmin('A1','ilham','09876543');
+end;
+
+select * from admin
+/
+=========================================================================================================================================
+/Insert User
+describe users
+
+create or replace procedure insertuser(id IN varchar2,password IN varchar2, username IN varchar2, firsr_name IN varchar2, last_name IN varchar2, gender IN varchar2, phone IN number,
+                                       email IN varchar2, address IN varchar2, city IN varchar2, state IN varchar2, postal_code IN number, country IN varchar2, amount IN number)
+IS 
+BEGIN
+ insert into users
+ values(id,password, username, firsr_name, last_name, gender, phone, email, address, city, state, postal_code, country, amount);
+END;
+
+begin insertuser('U1','123456','habhab','Ilham', 'Habibie', 'L', 082221908509, 'ilham12@gmail.com','Desa Lungge','Temanggung','Jawa Tengah',56251, 'Indonesia',1000000);
+end;
+
+begin insertuser('U2','123456','vidah','Vahidatin', 'Haqqur Rahmah', 'P', 0812345678, 'vidah@gmail.com','Sungai Borneo','Pontianak','Kalimantan',12978, 'Indonesia',900000);
+end;
+
+/UPDATE USER
+describe USERS
+
+create or replace procedure updateuser(u_id IN varchar2,pass_u IN varchar2, u IN varchar2, f_n IN varchar2, l_n IN varchar2, g IN varchar2, ph IN number,
+                                       mail IN varchar2, addr IN varchar2, cty IN varchar2, st IN varchar2, p_c IN number, c IN varchar2, a IN number)
+IS 
+BEGIN
+ update users set password=pass_u, username=u, first_name=f_n, last_name=l_n, gender=g, phone=ph, email=mail, address=addr, city=cty, state=st, postal_code=p_c, country=c, amount=a
+ where id=u_id;
+END;
+
+
+begin updateuser('U1','123456','habhab','Ilham', 'Habibie', 'L', 082221908509, 'ilham12@gmail.com','Desa Lungge','Temanggung','Jawa Tengah',56251, 'Korea',1000000);
+end;
+
+select * from users
+/
+=========================================================================================================================================
+/Insert Theaters
+describe theaters
+
+
+create or replace procedure inserttheater(id IN varchar2, name IN varchar2)
+IS 
+BEGIN
+ insert into theaters
+ values(id,name);
+END;
+
+begin inserttheater('T1','Cinema XXI');
+end;
+
+begin inserttheater('T2','The Premiere');
+end;
+
+begin inserttheater('T3','IMAX');
+end;
+
+
+/UPDATE THEATERS
+create or replace procedure updatetheater(t_id IN varchar2, n IN varchar2)
+IS 
+BEGIN
+ update theaters set name=n
+ where id=t_id;
+END;
+
+begin updatetheater('T1','Cinema XXI');
+end;
+select * from Theaters
+/
+=========================================================================================================================================
+/Insert Cinemas
+describe cinemas
+
+
+create or replace procedure insertcinema(id IN varchar2, name IN varchar2, location IN varchar2, theater_id IN varchar2)
+IS 
+BEGIN
+ insert into cinemas
+ values(id,name,location,theater_id);
+END;
+
+begin insertcinema('C1','TAMAN ANGGREK XXI', 'MALL TAMAN ANGGREK LT. 3','T1');
+end;
+
+begin insertcinema('C2','PLAZA INDONESIA PREMIERE', 'PLAZA INDONESIA Lantai 6','T2');
+end;
+
+begin insertcinema('C3','KELAPA GADING IMAX', 'MALL KELAPA GADING LT.3','T3');
+end;
+
+/UPDATE Cinemas
+create or replace procedure updatecinema(c_id IN varchar2, n IN varchar2, l IN varchar2, t_id IN varchar2)
+IS 
+BEGIN
+ update cinemas set name=n, location=l, theater_id=t_id
+ where id=c_id;
+END;
+
+begin updatecinema('C1','TAMAN ANGGREK XXI', 'MALL TAMAN ANGGREK LT. 3','T1');
+end;
+
+select * from cinemas
+/
+=========================================================================================================================================
+/Insert Rooms
+describe rooms
+
+
+create or replace procedure insertroom(id IN varchar2, name IN varchar2, available_seat IN number, cinemas_id IN varchar2)
+IS 
+BEGIN
+ insert into rooms
+ values(id, name, available_seat, cinemas_id);
+END;
+
+begin insertroom('R1','STUDIO 1', 50,'C1');
+end;
+
+begin insertroom('R2','STUDIO 1', 10,'C2');
+end;
+
+begin insertroom('R3','STUDIO 1', 25,'C3');
+end;
+
+/UPDATE ROOMS
+create or replace procedure updateroom(r_id IN varchar2, n IN varchar2, a_s IN number, c_id IN varchar2)
+IS 
+BEGIN
+ update rooms set name=n, available_seat=a_s, cinemas_id=c_id
+ where id=r_id;
+END;
+
+begin updateroom('R1','STUDIO 1', 50,'C1');
+end;
+
+select * from rooms
+/
+=========================================================================================================================================
+/Insert Seats
+describe seats
+
+
+create or replace procedure insertseat(id IN varchar2, status IN varchar2, room_id IN varchar2, name IN varchar2)
+IS 
+BEGIN
+ insert into seats
+ values(id, status, room_id, name);
+END;
+
+begin insertseat('S1','AVAILABLE','R1','A1');
+end;
+begin insertseat('S2','AVAILABLE','R1','A2');
+end;
+begin insertseat('S3','AVAILABLE','R1','A3');
+end;
+begin insertseat('S4','AVAILABLE','R1','A4');
+end;
+begin insertseat('S5','AVAILABLE','R1','A5');
+end;
+begin insertseat('S6','AVAILABLE','R1','A6');
+end;
+begin insertseat('S7','AVAILABLE','R1','A7');
+end;
+begin insertseat('S8','AVAILABLE','R1','A8');
+end;
+begin insertseat('S9','AVAILABLE','R1','A9');
+end;
+begin insertseat('S10','AVAILABLE','R1','A10');
+end;
+begin insertseat('S11','AVAILABLE','R2','A1');
+end;
+begin insertseat('S12','AVAILABLE','R2','A2');
+end;
+begin insertseat('S13','AVAILABLE','R2','A3');
+end;
+begin insertseat('S14','AVAILABLE','R2','A4');
+end;
+begin insertseat('S15','AVAILABLE','R2','A5');
+end;
+begin insertseat('S16','AVAILABLE','R2','A6');
+end;
+begin insertseat('S17','AVAILABLE','R2','A7');
+end;
+begin insertseat('S18','AVAILABLE','R2','A8');
+end;
+begin insertseat('S19','AVAILABLE','R2','A9');
+end;
+begin insertseat('S20','AVAILABLE','R2','A10');
+end;
+begin insertseat('S21','AVAILABLE','R3','A1');
+end;
+begin insertseat('S22','AVAILABLE','R3','A2');
+end;
+begin insertseat('S23','AVAILABLE','R3','A3');
+end;
+begin insertseat('S24','AVAILABLE','R3','A4');
+end;
+begin insertseat('S25','AVAILABLE','R3','A5');
+end;
+begin insertseat('S26','AVAILABLE','R3','A6');
+end;
+begin insertseat('S27','AVAILABLE','R3','A7');
+end;
+begin insertseat('S28','AVAILABLE','R3','A8');
+end;
+begin insertseat('S29','AVAILABLE','R3','A9');
+end;
+begin insertseat('S30','AVAILABLE','R3','A10');
+end;
+
+/UPDATE Seats
+create or replace procedure updateseat(s_id IN varchar2, s IN varchar2, r_id IN varchar2, n IN varchar2)
+IS 
+BEGIN
+ update seats set status=s, room_id=r_id, name=n
+ where id=s_id;
+END;
+
+begin updateseat('S1','AVAILABLE','R1','A1');
+end;
+
+/UPDATE Seats Status
+create or replace procedure updateseatstatus(s_id IN varchar2, s IN varchar2)
+IS 
+BEGIN
+ update seats set status=s
+ where id=s_id;
+END;
+
+begin updateseatstatus('S1','BOOKED');
+end;
+
+select * from seats
+=========================================================================================================================================
+/Insert Rating
+describe rating
+
+
+create or replace procedure insertrating(id IN varchar2, name IN varchar2)
+IS 
+BEGIN
+ insert into rating
+ values(id, name);
+END;
+
+begin insertrating('SU','SEMUA UMUR');
+end;
+begin insertrating('A','ANAK-ANAK');
+end;
+begin insertrating('BO','BIMBINGAN ORANG TUA');
+end;
+begin insertrating('R13+','REMAJA 13 KEATAS');
+end;
+begin insertrating('D17+','DEWASA 17 TAHUN KEATAS');
+end;
+begin insertrating('D21+','DEWASA 21 TAHUN KEATAS');
+end;
+
+/UPDATE Rating
+create or replace procedure updaterating(r_id IN varchar2, n IN varchar2)
+IS 
+BEGIN
+ update rating set name=n
+ where id=r_id;
+END;
+
+begin updaterating('SU','SEMUA UMUR');
+end;
+
+select * from rating
+=========================================================================================================================================
+/
+/Insert Category
+describe category
+
+
+create or replace procedure insertcategory(id IN varchar2, name IN varchar2)
+IS 
+BEGIN
+ insert into category
+ values(id, name);
+END;
+
+begin insertcategory('2D','2 DIMENSI');
+end;
+begin insertcategory('3D','3 DIMENSI');
+end;
+begin insertcategory('4D','4 DIMENSI');
+end;
+
+/UPDATE Category
+create or replace procedure updatecategory(c_id IN varchar2, n IN varchar2)
+IS 
+BEGIN
+ update category set name=n
+ where id=c_id;
+END;
+
+begin updatecategory('2D','2 DIMENSI');
+end;
+
+select * from category
+/
+=========================================================================================================================================
+/Insert Films
+describe films
+
+
+create or replace procedure insertfilm(id IN varchar2, title IN varchar2, poster_film IN varchar2, synopsis IN varchar2, description IN varchar2, duration IN varchar2, 
+                                       rating_id IN varchar2, category_id IN varchar2, status IN varchar2, trailer IN varchar2)
+IS 
+BEGIN
+ insert into films
+ values(id, title, poster_film, synopsis, description, duration, rating_id, category_id, status, trailer);
+END;
+
+
+begin insertfilm('F1','HOW TO TRAIN YOUR DRAGON: THE HIDDEN WORLD', '', 
+'As Hiccup fulfills his dream of creating a peaceful dragon utopia, Toothless’ discovery of an untamed, elusive mate draws the Night Fury away. When danger mounts at home and Hiccup’s reign as village chief is tested, both dragon and rider must make impossible decisions to save their kind.', 
+'Genre: Animation, Action, Adventure
+Actors: Jay Baruchel, Craig Ferguson, Gerard Butler
+Directors: Dean Deblois
+Production: Mad Hatter Entertainment, Universal Pictures, Dreamworks Animation', 
+'104 Minutes', 'SU', '2D','NOW SHOWING', '');
+end;
+
+begin insertfilm('F2','GLASS', '', 
+'Following the conclusion of SPLIT, GLASS finds David Dunn pursuing Kevin Wendell Crumb’s superhuman figure of The Beast in a series of escalating encounters, while the shadowy presence of Elijah Price emerges as an orchestrator who holds secrets critical to both men.', 
+'Genre: Drama, Mystery, Sci-Fi
+Actors: Bruce Willis, James Mcavoy, Samuel L. Jackson
+Directors: M. Night Shyamalan
+Production: Universal Pictures, Blumhouse Productions', 
+'129 Minutes', 'R13+', '2D',''NOW SHOWING', '');
+end;
+
+
+begin insertfilm('F3','CAPTAIN MARVEL', '', 
+'The story follows Carol Danvers as she becomes one of the universe’s most powerful heroes when Earth is caught in the middle of a galactic war between two alien races. Set in the 1990s, Captain Marvel is an all-new adventure from a previously unseen period in the history of the Marvel Cinematic Universe.', 
+'Genre: Action, Adventure, Sci-Fi
+Actors: Brie Larson, Jude Law, Ben Mendelsohn
+Directors: Anna Boden, Ryan Fleck
+Production: Marvel Studios', 
+'120 Minutes', 'R13+', '2D','UP COMING', '');
+end;
+
+/UPDATE Films
+create or replace procedure updatefilm(f_id IN varchar2, t IN varchar2, p_f IN varchar2, sy IN varchar2, d IN varchar2, du IN varchar2, 
+                                       r_id IN varchar2, c_id IN varchar2, s IN varchar2, tr IN varchar2)
+IS 
+BEGIN
+ update films set title=t, poster_film=p_f, synopsis=sy, description=d, duration=du, rating_id=r_id, category_id=c_id, status=s, trailer=tr
+ where id=f_id;
+END;
+
+begin updatefilm('F1','HOW TO TRAIN YOUR DRAGON: THE HIDDEN WORLD', '', 
+'As Hiccup fulfills his dream of creating a peaceful dragon utopia, Toothless’ discovery of an untamed, elusive mate draws the Night Fury away. When danger mounts at home and Hiccup’s reign as village chief is tested, both dragon and rider must make impossible decisions to save their kind.', 
+'Genre: Animation, Action, Adventure
+Actors: Jay Baruchel, Craig Ferguson, Gerard Butler
+Directors: Dean Deblois
+Production: Mad Hatter Entertainment, Universal Pictures, Dreamworks Animation', 
+'104 Minutes', 'SU', '2D','NOW SHOWING', 'https://www.youtube.com/watch?v=aBL6COBGjCA');
+end;
+
+/UPDATE Films Status
+create or replace procedure updatefilmstatus(f_id IN varchar2, s IN varchar2)
+IS 
+BEGIN
+ update films set status=s
+ where id=f_id;
+END;
+
+begin updatefilmstatus('F3','UP COMING');
+end;
+
+select * from films
+=========================================================================================================================================
+/Insert Films Rooms
+describe films_rooms
+
+
+create or replace procedure insertfilmsrooms(film_id IN varchar2, room_id IN varchar2, show_date IN date, hour IN varchar2)
+IS 
+BEGIN
+ insert into films_rooms
+ values(film_id, room_id, show_date, hour);
+END;
+
+begin insertfilmsrooms('F1','R1','01/21/2019','12:30');
+end;
+begin insertfilmsrooms('F1','R1','01/21/2019','16:50');
+end;
+begin insertfilmsrooms('F2','R2','01/21/2019','13:15');
+end;
+begin insertfilmsrooms('F2','R2','01/21/2019','15:15');
+end;
+begin insertfilmsrooms('F2','R3','01/21/2019','18:35');
+end;
+
+/UPDATE Films Rooms
+create or replace procedure updatefilmsrooms(f_id IN varchar2, r_id IN varchar2, s_d IN date, h IN varchar2)
+IS 
+BEGIN
+ update films_rooms set room_id=r_id, show_date=s_h, hour=h
+ where film_id=f_id;
+END;
+
+begin updatefilmsrooms('F1','R1','01/21/2019','12:30');
+end;
+ 
+select * from films_rooms
+=========================================================================================================================================
+/Insert Detail Films
+describe detail_films
+
+
+create or replace procedure insertsdetailfilms(id IN varchar2, film_id IN varchar2, price IN number, cinema_id IN varchar2)
+IS 
+BEGIN
+ insert into detail_films
+ values(id, film_id, price, cinema_id);
+END;
+
+begin insertsdetailfilms('DF1','F1',40000,'C1');
+end;
+begin insertsdetailfilms('DF2','F2',100000,'C2');
+end;
+begin insertsdetailfilms('DF3','F2',45000,'C3');
+end;
+
+/UPDATE detail films
+create or replace procedure updatedetailfilms(df_id IN varchar2, f_id IN varchar2, p IN number, c_id IN varchar2)
+IS 
+BEGIN
+ update detail_films set film_id=f_id, price=p, cinema_id=c_id
+ where id=df_id;
+END;
+
+begin updatedetailfilms('DF1','F1',40000,'C1');
+end;
+select * from detail_films
+=========================================================================================================================================
+/Insert Reservation
+describe reservation
+
+
+create or replace procedure insertreservation(id IN varchar2, reservation_date IN date, total_price IN number)
+IS 
+BEGIN
+ insert into reservation
+ values(id, reservation_date, total_price);
+END;
+
+begin insertreservation('RS1','01/22/2019',80000);
+end;
+begin insertreservation('RS2','01/22/2019',40000);
+end;
+
+/UPDATE Reservation
+create or replace procedure updatereservation(r_id IN varchar2, r_d IN date, t_p IN number)
+IS 
+BEGIN
+ update reservation set reservation_date=r_d, total_price=t_p
+ where id=r_id;
+END;
+
+begin updatereservation('RS1','01/22/2019',80000);
+end;
+
+select * from reservation
+=========================================================================================================================================
+/Insert Detail Reservation
+describe detail_reservation
+
+
+create or replace procedure insertdetailreservation(user_id IN varchar2, reservation_id IN varchar2, seat_id IN varchar2, detail_films_id IN varchar2)
+IS 
+BEGIN
+ insert into detail_reservation
+ values(user_id, reservation_id, seat_id, detail_films_id);
+END;
+
+begin insertdetailreservation('U1','RS1','S1','DF1');
+end;
+begin insertdetailreservation('U1','RS1','S2','DF1');
+end;
+
+/UPDATE Detail Reservation
+create or replace procedure updatedetailreservation(u_id IN varchar2, r_id IN varchar2, s_id IN varchar2, d_f_id IN varchar2)
+IS 
+BEGIN
+ update detail_reservation set reservation_id=r_id, seat_id=s_id, detail_films_id=d_f_id
+ where user_id=u_id;
+END;
+
+begin updatedetailreservation('U1','RS1','S1','DF1');
+end;
+
+select * from detail_reservation
+
+
+=========================================================================================================================================
+/Inser Restaurant
+describe restaurant
+
+create or replace procedure insertrestaurant(id IN varchar2, name IN varchar2, cinema_id IN varchar2)
+IS 
+BEGIN
+ insert into restaurant
+ values(id, name, cinema_id);
+END;
+
+begin insertrestaurant('RS1','RESTO XXI TAMAN ANGGREK','C1');
+end;
+begin insertrestaurant('RS2','RESTO PREMIERE PLAZA INDONESIA','C2');
+end;
+begin insertrestaurant('RS3','RESTO IMAX KELAPA GADING','C3');
+end;
+
+/UPDATE Restaurant
+create or replace procedure updaterestaurant(r_id IN varchar2, n IN varchar2, c_id IN varchar2)
+IS 
+BEGIN
+ update restaurant set name=n, cinema_id=c_id
+ where id=r_id;
+END;
+
+begin updaterestaurant('RS1','RESTO XXI TAMAN ANGGREK','C1');
+end;
+
+select * from restaurant
+=========================================================================================================================================
+//Insert Product
+describe product
+
+create or replace procedure insertproduct(id IN varchar2, variety IN varchar2, name IN varchar2, price IN number, restaurant_id IN varchar2)
+IS 
+BEGIN
+ insert into product
+ values(id, variety, name, price, restaurant_id);
+END;
+
+begin insertproduct('P1','SNACK','POP CORN', '25000', 'RS1');
+end;
+begin insertproduct('P2','SNACK','POP CORN', '35000', 'RS2');
+end;
+begin insertproduct('P3','SNACK','POP CORN', '30000', 'RS3');
+end;
+begin insertproduct('P4','DRINK','COCA COLA', '15000', 'RS1');
+end;
+begin insertproduct('P5','DRINK','COCA COLA', '25000', 'RS2');
+end;
+begin insertproduct('P6','DRINK','COCA COLA', '20000', 'RS3');
+end;
+
+/UPDATE Product
+create or replace procedure updateproduct(p_id IN varchar2, v IN varchar2, n IN varchar2, p IN number, r_id IN varchar2)
+IS 
+BEGIN
+ update product set variety=v, name=n, price=p, restaurant_id= r_id
+ where id=p_id;
+END;
+
+begin updateproduct('P1','SNACK','POP CORN', '25000', 'RS1');
+end;
+
+
+/DETELE Product
+create or replace procedure deleteproduct(p_id IN varchar2)
+IS 
+BEGIN
+ delete product
+ where id=p_id;
+END;
+
+begin deleteproduct('P6');
+end;
+
+select * from product
+=========================================================================================================================================
+//Insert Order
+describe orders
+
+create or replace procedure insertorder(user_id IN varchar2, product_id IN varchar2, reservation_id IN varchar2, quantity IN number)
+IS 
+BEGIN
+ insert into orders
+ values(user_id, product_id, reservation_id, quantity);
+END;
+
+begin insertorder('U2','P1','RS2',1);
+end;
+begin insertorder('U2','P4','RS2',1);
+end;
+
+/UPDATE Order
+create or replace procedure updateorder(u_id IN varchar2, p_id IN varchar2, r_id IN varchar2, q IN number)
+IS 
+BEGIN
+ update orders set product_id=p_id, reservation_id=r_id, quantity=q
+ where user_id=u_id;
+END;
+
+begin updateorder('U2','P1','RS2',1);
+end;
+
+select * from orders
+=========================================================================================================================================
+
+
