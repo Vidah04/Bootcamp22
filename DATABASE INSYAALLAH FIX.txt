@@ -1,0 +1,372 @@
+CREATE TABLE ADMIN(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ USERNAME VARCHAR2(10) NOT NULL,
+ PASSWORD VARCHAR2(8) NOT NULL
+);
+
+CREATE TABLE USERS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ PASSWORD VARCHAR2(6) NOT NULL,
+ USERNAME VARCHAR2(10) NOT NULL,
+ FIRST_NAME VARCHAR2(20) NOT NULL,
+ LAST_NAME VARCHAR2(20),
+ GENDER VARCHAR2(10),
+ PHONE NUMBER(15),
+ EMAIL VARCHAR2(20),
+ ADDRESS VARCHAR2(30),
+ CITY VARCHAR2(20),
+ STATE VARCHAR2(20),
+ POSTAL_CODE NUMBER(10),
+ COUNTRY VARCHAR2(20),
+ AMOUNT NUMBER(15)
+);
+
+CREATE TABLE PARAM(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20),
+ VALUE VARCHAR2(20)
+);
+
+CREATE TABLE THEATERS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE CINEMAS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL,
+ LOCATION VARCHAR2(30),
+ THEATER_ID VARCHAR(10) REFERENCES THEATERS(ID)
+);
+
+CREATE TABLE ROOMS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL,
+ AVAILABLE_SEAT NUMBER(10),
+ CINEMAS_ID VARCHAR2(10) REFERENCES CINEMAS(ID)
+);
+
+CREATE TABLE SEATS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ STATUS VARCHAR2(10)NOT NULL,
+ ROOM_ID VARCHAR2(10) REFERENCES ROOMS(ID)
+ NAME VARCHAR2(20)
+);
+
+CREATE TABLE SCHEDULE(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ SHOWTIMES TIMESTAMP
+);
+
+CREATE TABLE RATING(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE CATEGORY(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL
+);
+
+CREATE TABLE FILMS(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ TITLE VARCHAR2(30) NOT NULL,
+ POSTER_FILM BLOB,
+ SYNOPSIS VARCHAR2(50),
+ DESCRIPTION VARCHAR2(50),
+ DURATION VARCHAR2(10),
+ RATING_ID VARCHAR(10) REFERENCES RATING(ID),
+ CATEGORY_ID VARCHAR(10) REFERENCES CATEGORY(ID)
+);
+
+CREATE TABLE DETAIL_SCHEDULE(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ FILM_ID VARCHAR2(10) REFERENCES FILMS(ID),
+ SCHEDULE_ID VARCHAR2(10) REFERENCES SCHEDULE(ID),
+ ROOM_ID VARCHAR2(10) REFERENCES ROOMS(ID),
+ CINEMA_ID VARCHAR2(10) REFERENCES CINEMAS(ID),
+ PRICE NUMBER(10)
+);
+
+CREATE TABLE RESTAURANT(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ NAME VARCHAR2(20) NOT NULL,
+ CINEMA_ID VARCHAR2(10) REFERENCES CINEMAS(ID)
+);
+
+CREATE TABLE PRODUCT(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ VARIETY VARCHAR(10) NOT NULL,
+ NAME VARCHAR2(20),
+ PRICE NUMBER,
+ RESTAURANT_ID VARCHAR2(10) REFERENCES RESTAURANT(ID)
+);
+
+CREATE TABLE RESERVATION(
+ ID VARCHAR2(10) NOT NULL PRIMARY KEY,
+ RESERVATION_DATE DATE,
+ TOTAL_PRICE NUMBER(15)
+);
+
+CREATE TABLE DETAIL_RESERVATION(
+ USER_ID VARCHAR2(10) REFERENCES USERS(ID),
+ RESERVATION_ID VARCHAR2(10) REFERENCES RESERVATION(ID),
+ DETAIL_SCHEDULE_ID VARCHAR2(10) REFERENCES DETAIL_SCHEDULE(ID),
+ SEAT_ID VARCHAR2(10) REFERENCES SEATS(ID)
+);
+
+CREATE TABLE ORDERS(
+ USER_ID VARCHAR2(10) REFERENCES USERS(ID),
+ PRODUCT_ID VARCHAR2(10) REFERENCES PRODUCT(ID),
+ RESERVATION_ID VARCHAR2(10) REFERENCES RESERVATION(ID),
+ QUANTITY NUMBER(2)
+);
+
+==================================================================================================
+//PROCEDURE INSERT
+
+/Insert Admin
+describe admin
+
+create or replace procedure insertadmin(id IN varchar2, username IN varchar2, password IN varchar2)
+IS 
+BEGIN
+ insert into admin
+ values(id,username,password);
+END;
+
+begin insertadmin('A1','habhab','12345678');
+end;
+
+begin insertadmin('A2','vidah','12345678');
+end;
+
+select * from admin
+/
+
+/Insert User
+describe users
+
+create or replace procedure insertuser(id IN varchar2,password IN varchar2, username IN varchar2, firsr_name IN varchar2, last_name IN varchar2, gender IN varchar2, phone IN number,
+                                       email IN varchar2, address IN varchar2, city IN varchar2, state IN varchar2, postal_code IN number, country IN varchar2, amount IN number)
+IS 
+BEGIN
+ insert into users
+ values(id,password, username, firsr_name, last_name, gender, phone, email, address, city, state, postal_code, country, amount);
+END;
+
+begin insertuser('U1','123456','habhab','Ilham', 'Habibie', 'L', 082221908509, 'ilham12@gmail.com','Desa Lungge','Temanggung','Jawa Tengah',56251, 'Indonesia',1000000);
+end;
+
+begin insertuser('U2','123456','vidah','Vahidatin', 'Haqqur Rahmah', 'P', 0812345678, 'vidah@gmail.com','Sungai Borneo','Pontianak','Kalimantan',12978, 'Indonesia',900000);
+end;
+
+select * from users
+/
+
+/Insert Theaters
+describe theaters
+
+
+create or replace procedure inserttheater(id IN varchar2, name IN varchar2)
+IS 
+BEGIN
+ insert into theaters
+ values(id,name);
+END;
+
+begin inserttheater('T1','Cinema XXI');
+end;
+
+begin inserttheater('T2','The Premiere');
+end;
+
+begin inserttheater('T3','IMAX');
+end;
+
+select * from Theaters
+/
+
+/Insert Cinemas
+describe cinemas
+
+
+create or replace procedure insertcinema(id IN varchar2, name IN varchar2, location IN varchar2, theater_id IN varchar2)
+IS 
+BEGIN
+ insert into cinemas
+ values(id,name,location,theater_id);
+END;
+
+begin insertcinema('C1','TAMAN ANGGREK XXI', 'MALL TAMAN ANGGREK LT. 3','T1');
+end;
+
+begin insertcinema('C2','PLAZA INDONESIA PREMIERE', 'PLAZA INDONESIA Lantai 6','T2');
+end;
+
+begin insertcinema('C3','KELAPA GADING IMAX', 'MALL KELAPA GADING LT.3','T3');
+end;
+
+select * from cinemas
+/
+
+/Insert Rooms
+describe rooms
+
+
+create or replace procedure insertroom(id IN varchar2, name IN varchar2, available_seat IN number, cinemas_id IN varchar2)
+IS 
+BEGIN
+ insert into rooms
+ values(id, name, available_seat, cinemas_id);
+END;
+
+begin insertroom('R1','STUDIO 1', 50,'C1');
+end;
+
+begin insertroom('R2','STUDIO 1', 10,'C2');
+end;
+
+begin insertroom('R3','STUDIO 1', 25,'C3');
+end;
+
+select * from rooms
+/
+
+/Insert Seats
+describe seats
+
+
+create or replace procedure insertseat(id IN varchar2, status IN varchar2, room_id IN varchar2, name IN varchar2)
+IS 
+BEGIN
+ insert into seats
+ values(id, status, room_id, name);
+END;
+
+begin insertseat('S1','AVAILABLE','R1','A1');
+end;
+begin insertseat('S2','AVAILABLE','R1','A2');
+end;
+begin insertseat('S3','AVAILABLE','R1','A3');
+end;
+begin insertseat('S4','AVAILABLE','R1','A4');
+end;
+begin insertseat('S5','AVAILABLE','R1','A5');
+end;
+begin insertseat('S6','AVAILABLE','R1','A6');
+end;
+begin insertseat('S7','AVAILABLE','R1','A7');
+end;
+begin insertseat('S8','AVAILABLE','R1','A8');
+end;
+begin insertseat('S9','AVAILABLE','R1','A9');
+end;
+begin insertseat('S10','AVAILABLE','R1','A10');
+end;
+begin insertseat('S11','AVAILABLE','R2','A1');
+end;
+begin insertseat('S12','AVAILABLE','R2','A2');
+end;
+begin insertseat('S13','AVAILABLE','R2','A3');
+end;
+begin insertseat('S14','AVAILABLE','R2','A4');
+end;
+begin insertseat('S15','AVAILABLE','R2','A5');
+end;
+begin insertseat('S16','AVAILABLE','R2','A6');
+end;
+begin insertseat('S17','AVAILABLE','R2','A7');
+end;
+begin insertseat('S18','AVAILABLE','R2','A8');
+end;
+begin insertseat('S19','AVAILABLE','R2','A9');
+end;
+begin insertseat('S20','AVAILABLE','R2','A10');
+end;
+begin insertseat('S21','AVAILABLE','R3','A1');
+end;
+begin insertseat('S22','AVAILABLE','R3','A2');
+end;
+begin insertseat('S23','AVAILABLE','R3','A3');
+end;
+begin insertseat('S24','AVAILABLE','R3','A4');
+end;
+begin insertseat('S25','AVAILABLE','R3','A5');
+end;
+begin insertseat('S26','AVAILABLE','R3','A6');
+end;
+begin insertseat('S27','AVAILABLE','R3','A7');
+end;
+begin insertseat('S28','AVAILABLE','R3','A8');
+end;
+begin insertseat('S29','AVAILABLE','R3','A9');
+end;
+begin insertseat('S30','AVAILABLE','R3','A10');
+end;
+/
+
+/Insert Rating
+describe rating
+
+
+create or replace procedure insertrating(id IN varchar2, name IN varchar2)
+IS 
+BEGIN
+ insert into rating
+ values(id, name);
+END;
+
+begin insertrating('SU','SEMUA UMUR');
+end;
+begin insertrating('A','ANAK-ANAK');
+end;
+begin insertrating('BO','BIMBINGAN ORANG TUA');
+end;
+begin insertrating('R13+','REMAJA 13 KEATAS');
+end;
+begin insertrating('D17+','DEWASA 17 TAHUN KEATAS');
+end;
+begin insertrating('D21+','DEWASA 21 TAHUN KEATAS');
+end;
+
+select * from rating
+
+/
+/Insert Category
+describe category
+
+
+create or replace procedure insertcategory(id IN varchar2, name IN varchar2)
+IS 
+BEGIN
+ insert into category
+ values(id, name);
+END;
+
+begin insertcategory('2D','2 DIMENSI');
+end;
+begin insertcategory('3D','3 DIMENSI');
+end;
+begin insertcategory('4D','4 DIMENSI');
+end;
+
+select * from category
+/
+
+/Insert Films
+describe films
+
+
+create or replace procedure insertfilm(id IN varchar2, title IN varchar2, poster_film IN blob, synopsis IN varchar2, description IN varchar2, duration IN varchar2, 
+                                       rating_id IN varchar2, category_id IN varchar2)
+IS 
+BEGIN
+ insert into films
+ values(id, title, poster_film, synopsis, description, duration, rating_id, category_id);
+END;
+
+begin insertroom('R1','STUDIO 1', 50,'C1');
+end;
+
+
