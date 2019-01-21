@@ -1,0 +1,110 @@
+
+create or replace procedure deleteadmin(ad_id IN varchar2)
+IS 
+BEGIN
+ delete  admins
+ where id=ad_id;
+END;
+
+create or replace procedure deleteuser(us_id IN varchar2)
+IS 
+BEGIN
+ delete  users
+ where id=us_id;
+END;
+
+
+create or replace procedure deletecinema(cine_id IN varchar2)
+IS 
+BEGIN
+ delete  cinemas
+ where id=cine_id;
+END;
+
+
+create or replace procedure deleteroom(room_id IN varchar2)
+IS 
+BEGIN
+ delete  rooms
+ where id=room_id;
+END;
+
+
+create or replace procedure deleteseat(seat_id IN varchar2)
+IS 
+BEGIN
+ delete  seats
+ where id=seat_id;
+END;
+
+create or replace procedure deleterating(rat_id IN varchar2)
+IS 
+BEGIN
+ delete reting
+ where id=ret_id;
+END;
+
+
+create or replace procedure deletecategory(cat_id IN varchar2)
+IS 
+BEGIN
+ delete category
+ where id=cat_id;
+END;
+
+
+create or replace procedure deletefilms(films_id IN varchar2)
+IS 
+BEGIN
+ delete  films
+ where id=film_id;
+END;
+
+create or replace procedure deletefilmsrooms(filroom_id IN varchar2)
+IS 
+BEGIN
+ delete  films_rooms
+ where id=filroom_id;
+END;
+
+
+create or replace procedure deletedetailfilm(detailfilm_id IN varchar2)
+IS 
+BEGIN
+ delete  detail_films
+ where id=detailfilm_id;
+END;
+
+describe detail_films
+
+create or replace procedure deletereservation(reserv_id IN varchar2)
+IS 
+BEGIN
+ delete  reservation
+ where id=reserv_id;
+END;
+
+
+create or replace procedure deletedetailreservation(dr_id IN varchar2)
+IS 
+BEGIN
+ delete  detailreservation
+ where id=dr_id;
+END;
+
+create or replace procedure deleterestaurant(res_id IN varchar2)
+IS 
+BEGIN
+ delete restaurant
+ where id=res_id;
+END;
+
+
+create or replace procedure deleteproduct(p_id IN varchar2)
+IS 
+BEGIN
+ delete product
+ where id=p_id;
+END;
+
+describe restaurant product
