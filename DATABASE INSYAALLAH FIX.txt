@@ -1,3 +1,4 @@
+---------------------CREATE TABLE-----------------------------
 CREATE TABLE ADMIN(
  ID VARCHAR2(10) NOT NULL PRIMARY KEY,
  USERNAME VARCHAR2(10) NOT NULL,
@@ -130,10 +131,11 @@ CREATE TABLE ORDERS(
  QUANTITY NUMBER(2)
 );
 
-=========================================================================================================================================
-//PROCEDURE INSERT, UPDATE, DELETE
-=========================================================================================================================================
+==================================================================================================
+//PROCEDURE INSERT
+
 /Insert Admin
+describe admin
 
 create or replace procedure insertadmin(id IN varchar2, username IN varchar2, password IN varchar2)
 IS 
@@ -144,27 +146,13 @@ END;
 
 begin insertadmin('A1','habhab','12345678');
 end;
+
 begin insertadmin('A2','vidah','12345678');
 end;
 
 select * from admin
-/UPDATE ADMIN
-describe admin
-
-create or replace procedure updateadmin(admin_id IN varchar, username_admin IN varchar2, pass_admin In varchar2)
-IS
-BEGIN
-  update admin set username=username_admin, password=pass_admin
-     where id=admin_id;
-END;
 /
 
-begin updateadmin('A1','ilham','09876543');
-end;
-
-select * from admin
-/
-=========================================================================================================================================
 /Insert User
 describe users
 
@@ -182,24 +170,9 @@ end;
 begin insertuser('U2','123456','vidah','Vahidatin', 'Haqqur Rahmah', 'P', 0812345678, 'vidah@gmail.com','Sungai Borneo','Pontianak','Kalimantan',12978, 'Indonesia',900000);
 end;
 
-/UPDATE USER
-describe USERS
-
-create or replace procedure updateuser(u_id IN varchar2,pass_u IN varchar2, u IN varchar2, f_n IN varchar2, l_n IN varchar2, g IN varchar2, ph IN number,
-                                       mail IN varchar2, addr IN varchar2, cty IN varchar2, st IN varchar2, p_c IN number, c IN varchar2, a IN number)
-IS 
-BEGIN
- update users set password=pass_u, username=u, first_name=f_n, last_name=l_n, gender=g, phone=ph, email=mail, address=addr, city=cty, state=st, postal_code=p_c, country=c, amount=a
- where id=u_id;
-END;
-
-
-begin updateuser('U1','123456','habhab','Ilham', 'Habibie', 'L', 082221908509, 'ilham12@gmail.com','Desa Lungge','Temanggung','Jawa Tengah',56251, 'Korea',1000000);
-end;
-
 select * from users
 /
-=========================================================================================================================================
+
 /Insert Theaters
 describe theaters
 
@@ -233,7 +206,7 @@ begin updatetheater('T1','Cinema XXI');
 end;
 select * from Theaters
 /
-=========================================================================================================================================
+
 /Insert Cinemas
 describe cinemas
 
@@ -267,7 +240,7 @@ end;
 
 select * from cinemas
 /
-=========================================================================================================================================
+
 /Insert Rooms
 describe rooms
 
@@ -301,7 +274,7 @@ end;
 
 select * from rooms
 /
-=========================================================================================================================================
+
 /Insert Seats
 describe seats
 
@@ -373,6 +346,7 @@ begin insertseat('S29','AVAILABLE','R3','A9');
 end;
 begin insertseat('S30','AVAILABLE','R3','A10');
 end;
+<<<<<<< HEAD
 
 /UPDATE Seats
 create or replace procedure updateseat(s_id IN varchar2, s IN varchar2, r_id IN varchar2, n IN varchar2)
@@ -398,6 +372,10 @@ end;
 
 select * from seats
 =========================================================================================================================================
+=======
+/
+
+>>>>>>> fcc6e400550858a9c33f528d0c11c874bdb687ff
 /Insert Rating
 describe rating
 
@@ -434,7 +412,7 @@ begin updaterating('SU','SEMUA UMUR');
 end;
 
 select * from rating
-=========================================================================================================================================
+
 /
 /Insert Category
 describe category
@@ -467,7 +445,7 @@ end;
 
 select * from category
 /
-=========================================================================================================================================
+
 /Insert Films
 describe films
 
@@ -539,7 +517,7 @@ begin updatefilmstatus('F3','UP COMING');
 end;
 
 select * from films
-=========================================================================================================================================
+
 /Insert Films Rooms
 describe films_rooms
 
@@ -574,7 +552,7 @@ begin updatefilmsrooms('F1','R1','01/21/2019','12:30');
 end;
  
 select * from films_rooms
-=========================================================================================================================================
+
 /Insert Detail Films
 describe detail_films
 
@@ -604,7 +582,7 @@ END;
 begin updatedetailfilms('DF1','F1',40000,'C1');
 end;
 select * from detail_films
-=========================================================================================================================================
+
 /Insert Reservation
 describe reservation
 
@@ -617,8 +595,6 @@ BEGIN
 END;
 
 begin insertreservation('RS1','01/22/2019',80000);
-end;
-begin insertreservation('RS2','01/22/2019',40000);
 end;
 
 /UPDATE Reservation
@@ -633,7 +609,7 @@ begin updatereservation('RS1','01/22/2019',80000);
 end;
 
 select * from reservation
-=========================================================================================================================================
+
 /Insert Detail Reservation
 describe detail_reservation
 
@@ -647,9 +623,14 @@ END;
 
 begin insertdetailreservation('U1','RS1','S1','DF1');
 end;
-begin insertdetailreservation('U1','RS1','S2','DF1');
+begin insertdetailreservation('U1','RS1','S1','DF1');
+end;
+begin insertdetailreservation('U2','RS1','S1','DF1');
 end;
 
+select * from detail_reservation seats detail_films reservation
+
+<<<<<<< HEAD
 /UPDATE Detail Reservation
 create or replace procedure updatedetailreservation(u_id IN varchar2, r_id IN varchar2, s_id IN varchar2, d_f_id IN varchar2)
 IS 
@@ -663,8 +644,9 @@ end;
 
 select * from detail_reservation
 
+=======
+>>>>>>> fcc6e400550858a9c33f528d0c11c874bdb687ff
 
-=========================================================================================================================================
 /Inser Restaurant
 describe restaurant
 
@@ -675,11 +657,11 @@ BEGIN
  values(id, name, cinema_id);
 END;
 
-begin insertrestaurant('RS1','RESTO XXI TAMAN ANGGREK','C1');
+begin insertrestaurant('RS1','RESTO 1','C1');
 end;
-begin insertrestaurant('RS2','RESTO PREMIERE PLAZA INDONESIA','C2');
+begin insertrestaurant('RS2','RESTO 3','C2');
 end;
-begin insertrestaurant('RS3','RESTO IMAX KELAPA GADING','C3');
+begin insertrestaurant('RS3','RESTO 4','C3');
 end;
 
 /UPDATE Restaurant
@@ -694,7 +676,7 @@ begin updaterestaurant('RS1','RESTO XXI TAMAN ANGGREK','C1');
 end;
 
 select * from restaurant
-=========================================================================================================================================
+
 //Insert Product
 describe product
 
@@ -710,12 +692,6 @@ end;
 begin insertproduct('P2','SNACK','POP CORN', '35000', 'RS2');
 end;
 begin insertproduct('P3','SNACK','POP CORN', '30000', 'RS3');
-end;
-begin insertproduct('P4','DRINK','COCA COLA', '15000', 'RS1');
-end;
-begin insertproduct('P5','DRINK','COCA COLA', '25000', 'RS2');
-end;
-begin insertproduct('P6','DRINK','COCA COLA', '20000', 'RS3');
 end;
 
 /UPDATE Product
@@ -742,22 +718,10 @@ begin deleteproduct('P6');
 end;
 
 select * from product
-=========================================================================================================================================
-//Insert Order
-describe orders
 
-create or replace procedure insertorder(user_id IN varchar2, product_id IN varchar2, reservation_id IN varchar2, quantity IN number)
-IS 
-BEGIN
- insert into orders
- values(user_id, product_id, reservation_id, quantity);
-END;
 
-begin insertorder('U2','P1','RS2',1);
-end;
-begin insertorder('U2','P4','RS2',1);
-end;
 
+<<<<<<< HEAD
 /UPDATE Order
 create or replace procedure updateorder(u_id IN varchar2, p_id IN varchar2, r_id IN varchar2, q IN number)
 IS 
@@ -771,5 +735,11 @@ end;
 
 select * from orders
 =========================================================================================================================================
+=======
+>>>>>>> fcc6e400550858a9c33f528d0c11c874bdb687ff
 
+
+
+PROCEDURE DELETE
+-------------------------------------------------------------
 
