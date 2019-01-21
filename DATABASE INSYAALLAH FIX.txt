@@ -77,15 +77,23 @@ CREATE TABLE FILMS(
  DURATION VARCHAR2(10),
  RATING_ID VARCHAR(10) REFERENCES RATING(ID),
  CATEGORY_ID VARCHAR(10) REFERENCES CATEGORY(ID)
+ STATUS VARCHAR2(20),
+ TRAILER VARCHAR2(50)
 );
 
-CREATE TABLE DETAIL_SCHEDULE(
+CREATE TABLE DETAIL_FILMS(
  ID VARCHAR2(10) NOT NULL PRIMARY KEY,
  FILM_ID VARCHAR2(10) REFERENCES FILMS(ID),
- SCHEDULE_ID VARCHAR2(10) REFERENCES SCHEDULE(ID),
- ROOM_ID VARCHAR2(10) REFERENCES ROOMS(ID),
  CINEMA_ID VARCHAR2(10) REFERENCES CINEMAS(ID),
  PRICE NUMBER(10)
+);
+
+
+CREATE TABLE FILMS_ROOMS(
+ FILM_ID VARCHAR2(10) REFERENCES FILMS(ID),
+ ROOM_ID VARCHAR2(10) REFERENCES ROOMS(ID),
+ SHOW_DATE DATE ,
+ HOUR VARCHAR2(10)
 );
 
 CREATE TABLE RESTAURANT(
@@ -358,15 +366,163 @@ select * from category
 describe films
 
 
-create or replace procedure insertfilm(id IN varchar2, title IN varchar2, poster_film IN blob, synopsis IN varchar2, description IN varchar2, duration IN varchar2, 
-                                       rating_id IN varchar2, category_id IN varchar2)
+create or replace procedure insertfilm(id IN varchar2, title IN varchar2, poster_film IN varchar2, synopsis IN varchar2, description IN varchar2, duration IN varchar2, 
+                                       rating_id IN varchar2, category_id IN varchar2, status IN varchar2, trailer IN varchar2)
 IS 
 BEGIN
  insert into films
- values(id, title, poster_film, synopsis, description, duration, rating_id, category_id);
+ values(id, title, poster_film, synopsis, description, duration, rating_id, category_id, status, trailer);
 END;
 
-begin insertroom('R1','STUDIO 1', 50,'C1');
+
+begin insertfilm('F1','HOW TO TRAIN YOUR DRAGON: THE HIDDEN WORLD', '', 
+'As Hiccup fulfills his dream of creating a peaceful dragon utopia, Toothless’ discovery of an untamed, elusive mate draws the Night Fury away. When danger mounts at home and Hiccup’s reign as village chief is tested, both dragon and rider must make impossible decisions to save their kind.', 
+'Genre: Animation, Action, Adventure
+Actors: Jay Baruchel, Craig Ferguson, Gerard Butler
+Directors: Dean Deblois
+Production: Mad Hatter Entertainment, Universal Pictures, Dreamworks Animation', 
+'104 Minutes', 'SU', '2D','NOW SHOWING', '');
 end;
+
+begin insertfilm('F2','GLASS', '', 
+'Following the conclusion of SPLIT, GLASS finds David Dunn pursuing Kevin Wendell Crumb’s superhuman figure of The Beast in a series of escalating encounters, while the shadowy presence of Elijah Price emerges as an orchestrator who holds secrets critical to both men.', 
+'Genre: Drama, Mystery, Sci-Fi
+Actors: Bruce Willis, James Mcavoy, Samuel L. Jackson
+Directors: M. Night Shyamalan
+Production: Universal Pictures, Blumhouse Productions', 
+'129 Minutes', 'R13+', '2D',''NOW SHOWING', '');
+end;
+
+
+begin insertfilm('F3','CAPTAIN MARVEL', '', 
+'The story follows Carol Danvers as she becomes one of the universe’s most powerful heroes when Earth is caught in the middle of a galactic war between two alien races. Set in the 1990s, Captain Marvel is an all-new adventure from a previously unseen period in the history of the Marvel Cinematic Universe.', 
+'Genre: Action, Adventure, Sci-Fi
+Actors: Brie Larson, Jude Law, Ben Mendelsohn
+Directors: Anna Boden, Ryan Fleck
+Production: Marvel Studios', 
+'120 Minutes', 'R13+', '2D','UP COMING', '');
+end;
+
+select * from films
+
+/Insert Films Rooms
+describe films_rooms
+
+
+create or replace procedure insertfilmsrooms(film_id IN varchar2, room_id IN varchar2, show_date IN date, hour IN varchar2)
+IS 
+BEGIN
+ insert into films_rooms
+ values(film_id, room_id, show_date, hour);
+END;
+
+begin insertfilmsrooms('F1','R1','01/21/2019','12:30');
+end;
+begin insertfilmsrooms('F1','R1','01/21/2019','16:50');
+end;
+begin insertfilmsrooms('F2','R2','01/21/2019','13:15');
+end;
+begin insertfilmsrooms('F2','R2','01/21/2019','15:15');
+end;
+begin insertfilmsrooms('F2','R3','01/21/2019','18:35');
+end;
+
+select * from films_rooms
+
+/Insert Detail Films
+describe detail_films
+
+
+create or replace procedure insertsdetailfilms(id IN varchar2, film_id IN varchar2, price IN number, cinema_id IN varchar2)
+IS 
+BEGIN
+ insert into detail_films
+ values(id, film_id, price, cinema_id);
+END;
+
+begin insertsdetailfilms('DF1','F1',40000,'C1');
+end;
+begin insertsdetailfilms('DF2','F2',100000,'C2');
+end;
+begin insertsdetailfilms('DF3','F2',45000,'C3');
+end;
+
+select * from detail_films
+
+/Insert Reservation
+describe reservation
+
+
+create or replace procedure insertreservation(id IN varchar2, reservation_date IN date, total_price IN number)
+IS 
+BEGIN
+ insert into reservation
+ values(id, reservation_date, total_price);
+END;
+
+begin insertreservation('RS1','01/22/2019',80000);
+end;
+
+select * from reservation
+
+/Insert Detail Reservation
+describe detail_reservation
+
+
+create or replace procedure insertdetailreservation(user_id IN varchar2, reservation_id IN varchar2, seat_id IN varchar2, detail_films_id IN varchar2)
+IS 
+BEGIN
+ insert into detail_reservation
+ values(user_id, reservation_id, seat_id, detail_films_id);
+END;
+
+begin insertdetailreservation('U1','RS1','S1','DF1');
+end;
+begin insertdetailreservation('U1','RS1','S1','DF1');
+end;
+begin insertdetailreservation('U2','RS1','S1','DF1');
+end;
+
+select * from detail_reservation seats detail_films reservation
+
+
+/Inser Restaurant
+describe restaurant
+
+create or replace procedure insertrestaurant(id IN varchar2, name IN varchar2, cinema_id IN varchar2)
+IS 
+BEGIN
+ insert into restaurant
+ values(id, name, cinema_id);
+END;
+
+begin insertrestaurant('RS1','RESTO 1','C1');
+end;
+begin insertrestaurant('RS2','RESTO 3','C2');
+end;
+begin insertrestaurant('RS3','RESTO 4','C3');
+end;
+
+select * from restaurant
+
+//Inser Product
+describe product
+
+create or replace procedure insertproduct(id IN varchar2, variety IN varchar2, name IN varchar2, price IN number, restaurant_id IN varchar2)
+IS 
+BEGIN
+ insert into product
+ values(id, variety, name, price, restaurant_id);
+END;
+
+begin insertproduct('P1','SNACK','POP CORN', '25000', 'RS1');
+end;
+begin insertproduct('P2','SNACK','POP CORN', '35000', 'RS2');
+end;
+begin insertproduct('P3','SNACK','POP CORN', '30000', 'RS3');
+end;
+
+select * from product
+
 
 
