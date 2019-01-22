@@ -1,0 +1,96 @@
+select * from admin
+select * from users
+select * from films
+select * from films_rooms
+select * from detail_films
+select * from rating
+select * from category
+select * from theaters
+select * from cinemas
+select * from rooms
+select * from seats
+select * from restaurant
+select * from product
+select * from reservation
+select * from detail_reservation
+select * from orders
+====================================================================================
+/MENU NOW PLAYING
+
+select title, poster_film, category_id, rating_id from films where status='NOW PLAYING'
+
+create or replace procedure nowplaying
+IS
+  cursor n_data is select title, category_id, rating_id from films where status='NOW PLAYING';
+  n_rec n_data%rowtype;
+begin
+  for n_rec in n_data loop
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Title Film : ' ||n_rec.title);
+    dbms_output.put_line('Category : ' ||n_rec.category_id);
+    dbms_output.put_line('Rating : ' ||n_rec.rating_id);
+    dbms_output.put_line('-----------------------------------------------------');
+  end loop;
+end;
+/
+begin nowplaying();
+end;
+
+====================================================================================
+/MENU CHOOSE FILM
+describe films
+
+select title, poster_film, duration, category_id, rating_id, synopsis, description, trailer from films where id='F2'
+
+create or replace procedure choosefilm(film_id IN varchar2)
+IS
+  cursor n_data is select title, duration, category_id, rating_id, synopsis, description, trailer from films where id = film_id;
+  n_rec n_data%rowtype;
+begin
+  for n_rec in n_data loop
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Title Film : ' ||n_rec.title);
+    dbms_output.put_line('Duration : ' ||n_rec.duration);
+    dbms_output.put_line('Category : ' ||n_rec.category_id);
+    dbms_output.put_line('Rating : ' ||n_rec.rating_id);
+    dbms_output.put_line('Synopsis : ' ||n_rec.synopsis);
+    dbms_output.put_line('Description : ' ||n_rec.description);
+    dbms_output.put_line('Trailer : ' ||n_rec.trailer);
+    dbms_output.put_line('-----------------------------------------------------');
+  end loop;
+end;
+/
+begin choosefilm('F2');
+end;
+
+====================================================================================
+/MENU PLAYING AT WHERE FILM
+describe films
+
+select title, poster_film, duration, category_id, rating_id, synopsis, description, trailer from films where id='F2'
+select * from films
+select * from films_rooms
+select * from rooms
+select * from cinemas
+select * from theaters
+
+create or replace procedure choosefilm(film_id IN varchar2)
+IS
+  cursor n_data is select title, duration, category_id, rating_id, synopsis, description, trailer from films where id = film_id;
+  n_rec n_data%rowtype;
+begin
+  for n_rec in n_data loop
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Title Film : ' ||n_rec.title);
+    dbms_output.put_line('Duration : ' ||n_rec.duration);
+    dbms_output.put_line('Category : ' ||n_rec.category_id);
+    dbms_output.put_line('Rating : ' ||n_rec.rating_id);
+    dbms_output.put_line('Synopsis : ' ||n_rec.synopsis);
+    dbms_output.put_line('Description : ' ||n_rec.description);
+    dbms_output.put_line('Trailer : ' ||n_rec.trailer);
+    dbms_output.put_line('-----------------------------------------------------');
+  end loop;
+end;
+/
+begin choosefilm('F2');
+end;
