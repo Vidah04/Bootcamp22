@@ -682,27 +682,27 @@ select * from reservation
 describe detail_reservation
 
 
-create or replace procedure insertdetailreservation(user_id IN varchar2, reservation_id IN varchar2, seat_id IN varchar2, detail_films_id IN varchar2)
+create or replace procedure insertdetailreservation(user_id IN varchar2, reservation_id IN varchar2, seat_id IN varchar2, film_id IN varchar2)
 IS 
 BEGIN
  insert into detail_reservation
  values(user_id, reservation_id, seat_id, detail_films_id);
 END;
 
-begin insertdetailreservation('U1','RS1','S1','DF1');
+begin insertdetailreservation('U1','RS1','S1','F1');
 end;
-begin insertdetailreservation('U1','RS1','S2','DF1');
+begin insertdetailreservation('U1','RS1','S2','F1');
 end;
 
 /UPDATE Detail Reservation
-create or replace procedure updatedetailreservation(u_id IN varchar2, r_id IN varchar2, s_id IN varchar2, d_f_id IN varchar2)
+create or replace procedure updatedetailreservation(u_id IN varchar2, r_id IN varchar2, s_id IN varchar2, f_id IN varchar2)
 IS 
 BEGIN
- update detail_reservation set reservation_id=r_id, seat_id=s_id, detail_films_id=d_f_id
+ update detail_reservation set reservation_id=r_id, seat_id=s_id, film_id=f_id
  where user_id=u_id;
 END;
 
-begin updatedetailreservation('U1','RS1','S1','DF1');
+begin updatedetailreservation('U1','RS1','S1','F1');
 end;
 
 select * from detail_reservation

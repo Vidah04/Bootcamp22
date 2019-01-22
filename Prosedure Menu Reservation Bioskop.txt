@@ -36,6 +36,113 @@ end;
 begin nowplaying();
 end;
 
+===========================================================================================
+/MENU UP COMING
+
+select title, poster_film, category_id, rating_id from films where status='UP COMING'
+
+create or replace procedure upcoming
+IS
+  cursor n_data is select title, category_id, rating_id from films where status='UP COMING';
+  n_rec n_data%rowtype;
+begin
+  for n_rec in n_data loop
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Title Film : ' ||n_rec.title);
+    dbms_output.put_line('Category : ' ||n_rec.category_id);
+    dbms_output.put_line('Rating : ' ||n_rec.rating_id);
+    dbms_output.put_line('-----------------------------------------------------');
+  end loop;
+end;
+/
+begin upcoming();
+end;
+
+====================================================================================
+/MENU THEATER
+describe films
+
+select * from films
+select * from films_rooms
+select * from rooms
+select * from cinemas
+select * from theaters
+select fr.room_id, f.id, f.title, t.name, c.name, r.name 
+
+select t.name, c.name
+ from theaters t join cinemas c 
+on t.id = c.theater_id
+
+
+create or replace procedure menutheater
+IS
+  cursor n_data is  
+select t.name as tn , c.name as cn
+ from theaters t join cinemas c 
+on t.id = c.theater_id;
+
+  n_rec n_data%rowtype;
+begin
+  for n_rec in n_data loop
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Theaters : ' ||n_rec.tn);
+    dbms_output.put_line('Cinemas : ' ||n_rec.cn);
+    dbms_output.put_line('-----------------------------------------------------');
+  end loop;
+end;
+
+begin menutheater();
+end;
+
+====================================================================================
+/MENU CHOOSE CINEMAS IN THEATER
+select * from films_rooms 
+
+select c.name, c.location, f.title, f.category_id, f.rating_id, f.duration, fr.price, fr.show_date, fr.hour 
+from films f
+join films_rooms fr
+on f.id = fr.film_id
+join rooms r
+on fr.room_id = r.id
+join cinemas c
+on r.cinemas_id = c.id
+where c.id = 'C1'
+
+ 
+create or replace procedure choosecinema(cinid IN varchar2)
+IS
+  cursor n_data is 
+select c.name as names, c.location as locs, f.title as titles, f.category_id as categorys, f.rating_id as ratings, f.duration as duras, fr.price as pr, fr.show_date as swd, fr.hour as jam
+from films f
+join films_rooms fr
+on f.id = fr.film_id
+join rooms r
+on fr.room_id = r.id
+join cinemas c
+on r.cinemas_id = c.id
+where c.id = cinid;
+
+  n_rec n_data%rowtype;
+begin
+  for n_rec in n_data loop
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Cinema : ' ||n_rec.names);
+    dbms_output.put_line('Location : ' ||n_rec.locs);
+    dbms_output.put_line('Film : ' ||n_rec.titles);
+    dbms_output.put_line('Category : ' ||n_rec.categorys);
+    dbms_output.put_line('Rating : ' ||n_rec.ratings);
+    dbms_output.put_line('Duration : ' ||n_rec.duras);
+    dbms_output.put_line('Price : ' ||n_rec.pr);
+    dbms_output.put_line('Shcadule : ' ||n_rec.swd);
+    dbms_output.put_line('Showtime : ' ||n_rec.jam);
+
+    dbms_output.put_line('-----------------------------------------------------');
+  end loop;
+end;
+/
+begin choosecinema('C1');
+end;
+
 ====================================================================================
 /MENU CHOOSE FILM
 describe films
@@ -61,6 +168,160 @@ begin
 end;
 /
 begin choosefilm('F2');
+end;
+
+====================================================================================
+/MENU PLAYING AT THEATER WHERE FILM
+describe films
+
+select * from films
+select * from films_rooms
+select * from rooms
+select * from cinemas
+select * from theaters
+select fr.room_id, f.id, f.title, t.name, c.name, r.name 
+
+select t.name, c.name
+from films f join films_rooms fr 
+on f.id=fr.film_id join rooms r 
+on fr.room_id=r.id join cinemas c
+on r.cinemas_id=c.id join theaters t
+on c.theater_id=t.id
+where f.id='F2'
+union
+select t.name, c.name
+from films f join films_rooms fr 
+on f.id=fr.film_id join rooms r 
+on fr.room_id=r.id join cinemas c
+on r.cinemas_id=c.id join theaters t
+on c.theater_id=t.id
+where f.id='F2'
+
+create or replace procedure playingattheaterfilm(f_id IN varchar2)
+IS
+  cursor n_data is select t.name as theater, c.name as cinema, r.name as room
+         from films f join films_rooms fr 
+              on f.id=fr.film_id join rooms r 
+              on fr.room_id=r.id join cinemas c
+              on r.cinemas_id=c.id join theaters t
+              on c.theater_id=t.id
+              where f.id=f_id
+         union
+        select t.name, c.name, r.name
+         from films f join films_rooms fr 
+              on f.id=fr.film_id join rooms r 
+              on fr.room_id=r.id join cinemas c
+              on r.cinemas_id=c.id join theaters t
+              on c.theater_id=t.id
+              where f.id=f_id;
+  n_rec n_data%rowtype;
+begin
+  for n_rec in n_data loop
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Theater : ' ||n_rec.theater);
+    dbms_output.put_line('Cinemas : ' ||n_rec.cinema);
+    dbms_output.put_line('Room : ' ||n_rec.room);
+        dbms_output.put_line('-----------------------------------------------------');
+  end loop;
+end;
+/
+begin playingattheaterfilm('F2');
+end;
+
+====================================================================================
+/MENU PLAYING AT CINEMAS WHERE FILM AND CINEMAS
+describe films
+
+select * from films
+select * from detail_films
+select * from films_rooms
+select * from rooms
+select * from cinemas
+select * from theaters
+select fr.room_id, f.id, f.title, t.name, c.name, r.name 
+
+select c.name, c.location, f.title, f.category_id, f.rating_id, f.duration, fr.show_date, fr.hour, fr.price 
+from films f join films_rooms fr 
+on f.id=fr.film_id join rooms r 
+on fr.room_id=r.id join cinemas c
+on r.cinemas_id=c.id join theaters t
+on c.theater_id=t.id
+where f.id='F2' and c.id='C2';
+
+/coba
+select c.name, c.location, f.title, f.category_id, f.rating_id, f.duration, fr.show_date, fr.hour, fr.price,
+listagg(fr.hour || ':' ||', ') within group (order by fr.hour) as merge_ids 
+from films f join films_rooms fr 
+on f.id=fr.film_id join rooms r 
+on fr.room_id=r.id join cinemas c
+on r.cinemas_id=c.id join theaters t
+on c.theater_id=t.id
+where f.id='F2' and c.id='C2'
+group by c.name;
+
+select * from films_rooms
+
+select film_id, room_id, show_date, price,
+       listagg(hour, ' ) within group (order by hour) as HOURS
+from films_rooms
+group by film_id;
+
+
+create or replace procedure playingatcinematheaterfilm(f_id IN varchar2, c_id IN varchar2)
+IS
+  cursor n_data is select c.name as c_name, c.location as c_location, f.title as f_title, f.category_id as f_category, f.rating_id as f_rating, f.duration as f_duration, fr.show_date as fr_show, fr.hour as fr_hour, fr.price as fr_price
+from films f join films_rooms fr 
+on f.id=fr.film_id join rooms r 
+on fr.room_id=r.id join cinemas c
+on r.cinemas_id=c.id join theaters t
+on c.theater_id=t.id
+where f.id=f_id and c.id=c_id;
+  n_rec n_data%rowtype;
+begin
+  for n_rec in n_data loop
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Cinemas : ' ||n_rec.c_name);
+    dbms_output.put_line('Location : ' ||n_rec.c_location);
+    dbms_output.put_line('Film : ' ||n_rec.f_title);
+    dbms_output.put_line('Category : ' ||n_rec.f_category);
+    dbms_output.put_line('Rating : ' ||n_rec.f_rating);
+    dbms_output.put_line('Duration : ' ||n_rec.f_duration);
+    dbms_output.put_line('Show Date : ' ||n_rec.fr_show);
+    dbms_output.put_line('Hour : ' ||n_rec.fr_hour||', '||n_rec.fr_hour);
+    dbms_output.put_line('Price : ' ||n_rec.fr_price);
+    dbms_output.put_line('-----------------------------------------------------');
+  end loop;
+end;
+
+//For Hour 
+create or replace procedure playingatcinematheaterfilm(f_id IN varchar2, c_id IN varchar2)
+IS
+  cursor n_data is select c.name as c_name, c.location as c_location, f.title as f_title, f.category_id as f_category, f.rating_id as f_rating, f.duration as f_duration, fr.show_date as fr_show, fr.hour as fr_hour, fr.price as fr_price
+from films f join films_rooms fr 
+on f.id=fr.film_id join rooms r 
+on fr.room_id=r.id join cinemas c
+on r.cinemas_id=c.id join theaters t
+on c.theater_id=t.id
+where f.id=f_id and c.id=c_id;
+  n_rec n_data%rowtype;
+begin
+    dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Cinemas : ' ||n_rec.c_name);
+    dbms_output.put_line('Location : ' ||n_rec.c_location);
+    dbms_output.put_line('Film : ' ||n_rec.f_title);
+    dbms_output.put_line('Category : ' ||n_rec.f_category);
+    dbms_output.put_line('Rating : ' ||n_rec.f_rating);
+    dbms_output.put_line('Duration : ' ||n_rec.f_duration);
+    dbms_output.put_line('Show Date : ' ||n_rec.fr_show);
+    for n_rec in n_data loop
+    dbms_output.put_line('Hour : ' ||n_rec.fr_hour);
+    end loop;
+    dbms_output.put_line('Price : ' ||n_rec.fr_price);
+    dbms_output.put_line('-----------------------------------------------------');
+end;
+/
+
+begin playingatcinematheaterfilm('F2','C2');
 end;
 
 ====================================================================================
@@ -120,53 +381,106 @@ end;
 begin playingattheaterfilm('F2');
 end;
 
-====================================================================================
-/MENU PLAYING AT CINEMAS WHERE FILM AND CINEMAS
-describe films
+===================================================================================================
+/TRIGGER CHANGES SEAT STATUS
+select * from seats
 
-select * from films
-select * from detail_films
+create or replace trigger statusseat_change
+after insert or update on seats
+for ech row
+when (new.id > 0)
+declare
+old.status varchar2
+new.status varchar2
+begin
+ dbms_output.put_line('Old Seat Status : '|| :old.status);
+ dbms_output.put_line('New Seat Status : '|| :new.status);
+end;
+
+
+begin updateseatstatus('S1', 'AVAILABLE');
+end;
+
+====================================================================================
+/USER RESERVE TICKET
+
+select * from users
+select * from detail_reservation
 select * from films_rooms
 select * from rooms
 select * from cinemas
-select * from theaters
-select fr.room_id, f.id, f.title, t.name, c.name, r.name 
 
-select c.name, c.location, f.title, f.category_id, f.rating_id, f.duration, fr.show_date, fr.hour, fr.price 
-from films f join films_rooms fr 
-on f.id=fr.film_id join rooms r 
-on fr.room_id=r.id join cinemas c
-on r.cinemas_id=c.id join theaters t
-on c.theater_id=t.id
-where f.id='F2' and c.id='C2';
+select u.id ,u.first_name, f.title, dr.seat_id, fr.price, r.name, cn.name, th.name
+from users u join detail_reservation dr
+on u.id = dr.user_id join films f 
+on dr.film_id = f.id join films_rooms fr 
+on f.id = fr.film_id join rooms r 
+on fr.room_id = r.id join cinemas cn 
+on r.cinemas_id=cn.id join theaters th 
+on cn.theater_id=th.id
+where u.id='U2'
+union
+select u.id ,u.first_name , f.title, dr.seat_id, fr.price, r.name, cn.name, th.name
+from users u join detail_reservation dr
+on u.id = dr.user_id join films f 
+on dr.film_id = f.id join films_rooms fr 
+on f.id = fr.film_id join rooms r 
+on fr.room_id = r.id join cinemas cn 
+on r.cinemas_id=cn.id join theaters th 
+on cn.theater_id=th.id
+where u.id='U2'
 
-
-create or replace procedure playingatcinematheaterfilm(f_id IN varchar2, c_id IN varchar2)
+create or replace procedure reservticket(f_id IN varchar2)
 IS
-  cursor n_data is select c.name as c_name, c.location as c_location, f.title as f_title, f.category_id as f_category, f.rating_id as f_rating, f.duration as f_duration, fr.show_date as fr_show, fr.hour as fr_hour, fr.price as fr_price
-from films f join films_rooms fr 
-on f.id=fr.film_id join rooms r 
-on fr.room_id=r.id join cinemas c
-on r.cinemas_id=c.id join theaters t
-on c.theater_id=t.id
-where f.id=f_id and c.id=c_id;
+  cursor n_data is 
+select u.first_name as NAME , f.title as MOVIE, dr.seat_id as YOUR_SEAT, r.name as , cn.name, th.name
+from users u join detail_reservation dr
+on u.id = dr.user_id join films f 
+on dr.film_id = f.id join films_rooms fr 
+on f.id = fr.film_id join rooms r 
+on fr.room_id = r.id join cinemas cn 
+on r.cinemas_id=cn.id join theaters th 
+on cn.theater_id=th.id
+where u.id='U1'
+union
+select u.id ,u.first_name, f.title, dr.seat_id, fr.price, r.name, cn.name, th.name
+from users u join detail_reservation dr
+on u.id = dr.user_id join films f 
+on dr.film_id = f.id join films_rooms fr 
+on f.id = fr.film_id join rooms r 
+on fr.room_id = r.id join cinemas cn 
+on r.cinemas_id=cn.id join theaters th 
+on cn.theater_id=th.id
+where u.id='U1';
   n_rec n_data%rowtype;
 begin
   for n_rec in n_data loop
     dbms_output.put_line('-----------------------------------------------------');
+    dbms_output.put_line('Theater : ' ||n_rec.t_name);
     dbms_output.put_line('Cinemas : ' ||n_rec.c_name);
-    dbms_output.put_line('Location : ' ||n_rec.c_location);
-    dbms_output.put_line('Film : ' ||n_rec.f_title);
-    dbms_output.put_line('Category : ' ||n_rec.f_category);
-    dbms_output.put_line('Rating : ' ||n_rec.f_rating);
-    dbms_output.put_line('Duration : ' ||n_rec.f_duration);
-    dbms_output.put_line('Show Date : ' ||n_rec.fr_show);
-    dbms_output.put_line('Hour : ' ||n_rec.fr_hour||', '||n_rec.fr_hour);
-    dbms_output.put_line('Price : ' ||n_rec.fr_price);
     dbms_output.put_line('-----------------------------------------------------');
   end loop;
 end;
-/begin playingatcinematheaterfilm('F2','C2');
+
+
+SELECT * FROM DETAIL_RESERVATION
+create or replace procedure insertdetailreservation(user_id IN varchar2, reservation_id IN varchar2, seat_id IN varchar2, film_id IN varchar2)
+IS 
+BEGIN
+ insert into detail_reservation
+ values(user_id, reservation_id, seat_id, detail_films_id);
+END;
+
+RESERV
+begin insertdetailreservation('U2','RS2','S2','F2');
 end;
 
+select * from restaurant
+select * from orders
+select * from product
+select * from reservation
+select u.first_name from user u join orders o
 
+
+begin insertorder('U2','P3','RS2',1);
+end;
