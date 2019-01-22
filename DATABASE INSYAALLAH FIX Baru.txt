@@ -573,6 +573,50 @@ END;
 begin updatefilmsrooms('F1','R1','01/21/2019','12:30');
 end;
  
+//coba
+/Insert Films Rooms
+describe films_rooms
+
+
+create or replace procedure insertfilmsrooms(film_id IN varchar2, room_id IN varchar2, show_date IN date, hour IN varchar2, price IN number)
+IS 
+BEGIN
+ insert into films_rooms
+ values(film_id, room_id, show_date, hour, price);
+END;
+
+begin insertfilmsrooms('F1','R1','01/21/2019','12:30',40000);
+end;
+begin insertfilmsrooms('F1','R1','01/21/2019','16:50',40000);
+end;
+begin insertfilmsrooms('F2','R2','01/21/2019','13:15',100000);
+end;
+begin insertfilmsrooms('F2','R2','01/21/2019','15:15',100000);
+end;
+begin insertfilmsrooms('F2','R3','01/21/2019','18:35',45000);
+end;
+
+
+/UPDATE Films Rooms
+describe films_rooms
+create or replace procedure updatefilmsrooms(f_id IN varchar2, r_id IN varchar2, s_d IN date, h IN varchar2, p IN number)
+IS 
+BEGIN
+ update films_rooms set room_id=r_id, show_date=s_h, hour=h, price=p
+ where film_id=f_id;
+END;
+
+begin updatefilmsrooms('F1','R1','01/21/2019','12:30',40000);
+end;
+begin updatefilmsrooms('F1','R1','01/21/2019','16:50',40000);
+end;
+begin updatefilmsrooms('F2','R2','01/21/2019','13:15',100000);
+end;
+begin updatefilmsrooms('F2','R2','01/21/2019','15:15',100000);
+end;
+begin updatefilmsrooms('F2','R3','01/21/2019','18:35',45000);
+end;
+
 select * from films_rooms
 =========================================================================================================================================
 /Insert Detail Films
